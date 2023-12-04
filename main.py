@@ -1,5 +1,16 @@
-from playwright.sync_api import Playwright, sync_playwright, expect
+import tkinter as tk
+from tkinter import messagebox
+from playwright.sync_api import Playwright, sync_playwright
 
+
+def play_code():
+    try:
+        with sync_playwright() as playwright:
+            run(playwright)
+        
+        messagebox.showinfo("Test result", "Test went well!") 
+    except Exception as e:
+        messagebox.showerror("Error", f"Test went not well: {str(e)}")
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -32,13 +43,15 @@ def run(playwright: Playwright) -> None:
     page.get_by_label("", exact=True).fill("Dobrý den, celý den")
     
     page.wait_for_timeout(5000)
-    
 
-
-    # ---------------------
     context.close()
     browser.close()
 
+# GUI components
+main_window = tk.Tk()
+main_window.title("PLAYWRIGHT TESTING")
 
-with sync_playwright() as playwright:
-    run(playwright)
+test_button = tk.Button(main_window, text="TEST SREALITY WEB", command=play_code)
+test_button.pack(pady=20)
+
+main_window.mainloop()
